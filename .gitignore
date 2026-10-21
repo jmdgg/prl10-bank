@@ -1,0 +1,6 @@
+node_modules/
+nimcache/
+*.db
+*.log
+server/bank.exe
+web/public/app.js

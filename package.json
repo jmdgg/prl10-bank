@@ -1,0 +1,18 @@
+{
+  "name": "tala-bank",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Demo online banking app: Nim + SQLite (SQL) backend, TypeScript UI.",
+  "type": "module",
+  "scripts": {
+    "build:ui": "esbuild web/src/main.ts --bundle --minify --outfile=web/public/app.js",
+    "typecheck": "tsc -p .",
+    "test": "node --test tests/api.test.ts"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  }
+}
