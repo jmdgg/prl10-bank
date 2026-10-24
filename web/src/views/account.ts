@@ -1,4 +1,4 @@
-import { api, Account, HistoryPage } from "../api";
+import { api, API_BASE, Account, HistoryPage } from "../api";
 import { h, btn, linkBtn, emptyState, monthNow } from "../util";
 import { accountCard } from "./dashboard";
 import { txRow } from "./tx";
@@ -42,7 +42,7 @@ export async function accountView(id: number): Promise<HTMLElement> {
   let searchTimer: number | undefined;
   search.addEventListener("input", () => { clearTimeout(searchTimer); searchTimer = window.setTimeout(() => { page = 1; void loadRows(); }, 250); });
 
-  const stmt = (format: string) => `/api/accounts/${id}/statement?month=${month.value}&format=${format}`;
+  const stmt = (format: string) => `${API_BASE}/api/accounts/${id}/statement?month=${month.value}&format=${format}`;
   await reload();
   return h("main", { class: "page" }, title,
     h("nav", { class: "crumbs", "aria-label": "Breadcrumb" }, h("a", { href: "#/" }, "Accounts"), h("span", { "aria-hidden": "true" }, "/"), crumb),
