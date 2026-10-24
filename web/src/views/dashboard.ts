@@ -117,18 +117,20 @@ export async function dashboardView(user: User): Promise<HTMLElement> {
     finally { open.disabled = false; }
   } });
 
+  const searchBar = h("div", { class: "search wide", role: "search" }, icon("search", 18), searchInput);
+
   await load();
   const first = user.fullName.split(" ")[0];
   return h("main", { class: "page" },
     h("h1", { class: "sr-only" }, `Hello, ${first}`),
-    h("div", { class: "search wide", role: "search" }, icon("search", 18), searchInput),
     h("section", { class: "hero", "aria-label": "Total balance" },
       h("p", { class: "hero-hello" }, `Hello, ${first}`),
       h("div", { class: "hero-row" }, h("p", { class: "hero-label" }, "Total balance"), eye),
       amount, count),
     h("section", { class: "card quick", "aria-label": "Quick actions" }, tiles),
     h("section", { "aria-labelledby": "h-accts" }, h("h2", { id: "h-accts" }, "My accounts"), accountsBox),
-    h("section", { class: "card", "aria-labelledby": "h-recent", "aria-live": "polite" }, recentTitle, recentBox),
+    h("section", { class: "card", "aria-labelledby": "h-recent", "aria-live": "polite" },
+      searchBar, recentTitle, recentBox),
     h("section", { class: "card slim row gap center wrap", "aria-label": "Open another account" },
       h("div", { class: "grow" }, h("strong", null, "Need another account?"), h("p", { class: "muted" }, "Every new account starts with ₱5,000.00.")),
       h("label", { class: "sr-only", for: "kind" }, "Account type"), kind, open));

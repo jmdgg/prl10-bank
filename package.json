@@ -7,7 +7,7 @@
   "scripts": {
     "build:ui": "esbuild web/src/main.ts --bundle --minify --outfile=web/public/app.js",
     "typecheck": "tsc -p .",
-    "test": "node --test tests/api.test.ts"
+    "test": "node --experimental-strip-types --test tests/api.test.ts"
   },
   "license": "UNLICENSED",
   "devDependencies": {

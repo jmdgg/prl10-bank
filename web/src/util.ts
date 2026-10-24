@@ -80,6 +80,11 @@ export function field(o: { id: string; label: string; type?: string; hint?: stri
       msg.replaceChildren(...(m ? [icon("alert", 16), h("span", null, m)] : hint ? [hint] : []));
       if (m) input.setAttribute("aria-invalid", "true"); else input.removeAttribute("aria-invalid");
     },
+    success(nodes: (Node | string)[]) {
+      msg.className = "field-msg ok";
+      msg.replaceChildren(...nodes);
+      input.removeAttribute("aria-invalid");
+    },
   };
 }
 

@@ -27,7 +27,7 @@ proc bankErr*(status: int, code, msg: string): BankError =
 proc fail(status: int, code, msg: string) {.noreturn.} =
   raise bankErr(status, code, msg)
 
-proc ensureTrue(ok: bool, status: int, code, msg: string) =
+proc ensureTrue*(ok: bool, status: int, code, msg: string) =
   if not ok: fail(status, code, msg)
 
 # ---- amounts -------------------------------------------------------------
@@ -184,9 +184,42 @@ proc withdraw*(user: User, accountId, amount: int, note: string): JsonNode =
   except DbError as e: raise friendly(e)
   ownedAccount(user, accountId)
 
+proc normalizeAccountNumber*(s: string): string =
+  var digits = ""
+  for c in s:
+    if c in {'0'..'9'}: digits.add(c)
+  if digits.len == 10:
+    return digits[0..3] & "-" & digits[4..9]
+  return s.strip()
+
+proc maskName*(name: string): string =
+  var parts: seq[string] = @[]
+  for word in name.splitWhitespace():
+    if word.len > 0:
+      parts.add word[0].toUpperAscii() & "***"
+  parts.join(" ")
+
+proc lookupAccount*(user: User, rawNumber: string): JsonNode =
+  let norm = normalizeAccountNumber(rawNumber)
+  let plain = rawNumber.strip().replace("-", "")
+  ensureTrue(plain != "", 400, "INVALID_NUMBER", "Enter an account number.")
+  let r = db.getRow(sql"""
+    SELECT a.id, a.number, u.full_name, a.kind, a.status, a.user_id
+    FROM accounts a
+    JOIN users u ON u.id = a.user_id
+    WHERE a.number = ? OR REPLACE(a.number, '-', '') = ?
+  """, norm, plain)
+  ensureTrue(r[0] != "", 404, "DEST_NOT_FOUND", "Destination account number not found.")
+  %*{"id": parseInt(r[0]), "number": r[1], "name": maskName(r[2]), "kind": r[3], "status": r[4], "isSelf": (parseInt(r[5]) == user.id)}
+
 proc transfer*(user: User, fromId: int, toNumber: string, amount: int, note: string): JsonNode =
   let src = ownedAccount(user, fromId)
-  let dest = db.getRow(sql"SELECT id, number FROM accounts WHERE number = ?", toNumber.strip())
+  let norm = normalizeAccountNumber(toNumber)
+  let plain = toNumber.strip().replace("-", "")
+  let dest = db.getRow(sql"""
+    SELECT id, number FROM accounts
+    WHERE number = ? OR REPLACE(number, '-', '') = ?
+  """, norm, plain)
   ensureTrue(dest[0] != "", 404, "DEST_NOT_FOUND", "Destination account number not found.")
   ensureTrue(dest[0] != $fromId, 400, "SAME_ACCOUNT", "Choose a different destination account.")
   db.exec(sql"BEGIN IMMEDIATE") # both legs succeed or neither does

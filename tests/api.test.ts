@@ -131,6 +131,21 @@ test("9. transfer moves money between accounts and is recorded on both", async (
   assert.equal(await balance(b.c, b.acct.id), 600_000);
   assert.equal((await a.c.get(`/api/accounts/${a.acct.id}/transactions`)).json.items[0].kind, "Transfer Out");
   assert.equal((await b.c.get(`/api/accounts/${b.acct.id}/transactions`)).json.items[0].kind, "Transfer In");
+
+  // Account lookup with formatted and unformatted number
+  const lookup1 = await a.c.get(`/api/accounts/lookup?number=${b.acct.number}`);
+  assert.equal(lookup1.status, 200);
+  assert.equal(lookup1.json.account.number, b.acct.number);
+  assert.equal(lookup1.json.account.name, "T*** U***");
+
+  const unformatted = b.acct.number.replace("-", "");
+  const lookup2 = await a.c.get(`/api/accounts/lookup?number=${unformatted}`);
+  assert.equal(lookup2.status, 200);
+  assert.equal(lookup2.json.account.number, b.acct.number);
+
+  // Transfer with unformatted number succeeds
+  const rUnformatted = await a.c.post("/api/transfers", { fromAccountId: a.acct.id, toNumber: unformatted, amount: "50" });
+  assert.equal(rUnformatted.status, 200);
 });
 
 test("10. a failed transfer changes neither account (atomic)", async () => {

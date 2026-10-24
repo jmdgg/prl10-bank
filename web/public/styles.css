@@ -74,7 +74,7 @@ input[aria-invalid="true"] { border-color: var(--danger); }
 .input-group input { border: 0; outline: 0 !important; background: transparent; flex: 1; min-width: 0; }
 .prefix { padding-left: 1rem; color: var(--muted); font-weight: 700; }
 .field-msg { display: flex; gap: .4rem; align-items: flex-start; margin-top: .45rem; font-size: .88rem; color: var(--muted); }
-.field-msg:empty { display: none; } .field-msg.error { color: var(--danger); font-weight: 500; } .field-msg .icon { margin-top: 2px; }
+.field-msg:empty { display: none; } .field-msg.error { color: var(--danger); font-weight: 500; } .field-msg.ok { color: var(--success); font-weight: 500; } .field-msg .icon { margin-top: 2px; }
 .notice { display: flex; gap: .6rem; align-items: flex-start; padding: .8rem 1rem; border-radius: var(--radius-sm); margin-top: 1rem; font-size: .93rem; }
 .notice.danger { background: var(--danger-soft); color: var(--danger); }
 .chips { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .85rem; }
@@ -173,6 +173,7 @@ dl { display: grid; grid-template-columns: max-content 1fr; gap: .65rem 1.5rem; 
 .tab { min-height: 44px; border: 0; border-radius: 999px; background: var(--surface); color: var(--muted); padding: .45rem 1.1rem; font: 600 .95rem var(--font); cursor: pointer; box-shadow: var(--shadow); }
 .tab:hover { color: var(--ink); } .tab[aria-selected="true"] { background: var(--primary); color: var(--primary-ink); }
 .toolbar { padding: 1rem 1.35rem; border-bottom: 1px solid var(--line); } .search { position: relative; max-width: 360px; color: var(--muted); } .search.wide { max-width: none; } .search.wide input { min-height: 54px; box-shadow: var(--shadow); }
+.card > .search { margin-bottom: 1.1rem; }
 .grow-field { flex: 2 1 240px; }
 .search .icon { position: absolute; left: .9rem; top: 50%; transform: translateY(-50%); pointer-events: none; } .search input { padding-left: 2.6rem; border-radius: 999px; }
 .table-wrap { overflow-x: auto; } table { width: 100%; border-collapse: collapse; }

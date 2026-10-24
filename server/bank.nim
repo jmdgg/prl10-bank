@@ -110,6 +110,11 @@ routes:
   get "/api/accounts":
     guarded ok(%*{"accounts": listAccounts(session(request))})
 
+  get "/api/accounts/lookup":
+    guarded (block:
+      let u = session(request)
+      ok(%*{"account": lookupAccount(u, request.params.getOrDefault("number"))}))
+
   post "/api/accounts":
     guarded (block:
       let u = session(request)
