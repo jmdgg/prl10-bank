@@ -20,6 +20,9 @@ export interface Overview {
 export interface AdminUser { id: number; username: string; fullName: string; role: Role; createdAt: string; accounts: number }
 export interface AuditEntry { id: number; user: string; action: string; detail: string; createdAt: string }
 
+// Set in index.html (window.API_BASE); empty = same-origin Nim server.
+export const API_BASE: string = (window as unknown as { API_BASE?: string }).API_BASE ?? "";
+
 export class ApiError extends Error {
   constructor(public status: number, public code: string, message: string) { super(message); }
 }
@@ -27,8 +30,9 @@ export class ApiError extends Error {
 export async function api<T>(method: "GET" | "POST", path: string, body?: unknown): Promise<T> {
   let res: Response;
   try {
-    res = await fetch(path, {
+    res = await fetch(API_BASE + path, {
       method,
+      credentials: "include",
       headers: body === undefined ? {} : { "Content-Type": "application/json" },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
